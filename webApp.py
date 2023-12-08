@@ -60,6 +60,8 @@ description = st.text_area("Describe your vehicle condition")
 
 # Make the prediction
 if st.button("Predict Price"):
+    gif_path = "loading_animation.gif"
+    st.image(gif_path)
     predicted_price = predict_price(year, cylinder, odometer, age)
     st.write(f"Predicted price: ${predicted_price:.2f}")
 
