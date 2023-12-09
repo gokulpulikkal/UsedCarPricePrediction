@@ -23,7 +23,7 @@ default_model_path = "randomForest"
 loading_gif_path = "l2.gif"
 selectbox_color = '#000000'
 title_color = '#134F5C'
-
+st.set_page_config(page_title="Let's predict this", layout="wide")
 def loadModel(modelPath):
     with open(modelPath, "rb") as f:
         model = pickle.load(f)
@@ -468,47 +468,51 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
 
 # Create a Streamlit app
 
-# add_custom_css("cars.jpg")
-st.title(":blue[Used Car Price Prediction Model]")
+# add_custom_css("cars4.jpg")
+# Title
+# st.title(":car: :blue[Used Car Price Prediction Model]")
+col1, col2, col3 = st.columns([0.1, 1, 0.1])
 
+col2.image("bgt1.jpeg")
+st.title("") #Don't remove. This is added for extra space. Empty is not seems to be working
 
+col1, col2, col3 = st.columns([3, 3, 3], gap="large")
 # Collect user input
-year = st.number_input("Year", min_value=1980, max_value=2023)
-cylinder = st.number_input("Number of cylinders", min_value=3, max_value=8)
-odometer = st.number_input("Odometer reading (miles)", min_value=0)
-age = st.number_input("Age of car (years)", min_value=0)
-# st.markdown('<label style="color:red;">Select an option*</label>', unsafe_allow_html=True)
+with col1:
+    year = st.number_input("Year", min_value=1980, max_value=2023)
+with col1:
+    cylinder = st.number_input("Number of cylinders", min_value=3, max_value=8)
+with col1:
+    odometer = st.number_input("Odometer reading (miles)", min_value=0)
+with col1:
+    age = st.number_input("Age of car (years)", min_value=0)
+with col1:
+    manufacturer = st.selectbox("Please select Manufacturer", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
+with col1:
+    region = st.selectbox("Please select Region",options=options.regions_options, index=None, placeholder="Select Region")
 
-manufacturer = st.selectbox("Please select Manufacturer", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-region = st.selectbox("Please select Region",options=options.regions_options, index=None, placeholder="Select Region")
-# Make the default condition as uncharted
-condition = st.selectbox("Please select Condition of your vehicle",options=options.vehicle_condition_options, index=None, placeholder="Vehicle condition")
-# st.markdown('<label style="color:red;">Required *</label>', unsafe_allow_html=True)
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-fuel = st.selectbox("Please select fuel type of your vehicle *",options=options.fuel_options, index=None, placeholder="Fuel type")
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-# st.markdown('<label style="color:red;">Required *</label>', unsafe_allow_html=True)
-title_status = st.selectbox("Please select title status of your vehicle *",options=options.title_status_options, index=None, placeholder="Title Status")
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-# st.markdown('<label style="color:red;">Required *</label>', unsafe_allow_html=True)
-transmission = st.selectbox("Please select transmission type of your vehicle *",options=options.transmission_options, index=None, placeholder="Transmission")
-# Make the default condition as uncharted
-vehicle_size = st.selectbox("Please select size type of your vehicle",options=options.vehicle_sizes, index=None, placeholder="Vehicle size")
-vehicle_color = st.selectbox("Please select color of your vehicle",options=options.colors, index=None, placeholder="Vehicle color")
-months_ago_number = st.number_input("When many months ago this got posted", min_value=0)
-# Select car model
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-# st.markdown('<label style="color:red;">Required *</label>', unsafe_allow_html=True)
-selected_model = st.selectbox("Choose car model *", options.models, index=None, placeholder="Vehicle Model")
-# Select car drive
-selected_drive_type = st.selectbox("Choose car drive type", options.drive_options, index=None, placeholder="Vehicle Drive type")
-# Select car type
-selected_type = st.selectbox("Choose car type", options.type, index=None, placeholder="Vehicle type")
-# Select state
-# st.markdown("<style>.required-field:after { content:' *'; color: red; }</style>", unsafe_allow_html=True)
-# st.markdown('<label style="color:red;">Required *</label>', unsafe_allow_html=True)
-selected_state = st.selectbox("Choose state *", options.state, index=None, placeholder="Select State")
+with col2:
+    condition = st.selectbox("Please select Condition of your vehicle",options=options.vehicle_condition_options, index=None, placeholder="Vehicle condition")
+with col2:
+    fuel = st.selectbox("Please select fuel type of your vehicle *",options=options.fuel_options, index=None, placeholder="Fuel type")
+with col2:
+    title_status = st.selectbox("Please select title status of your vehicle *",options=options.title_status_options, index=None, placeholder="Title Status")
+with col2:
+    transmission = st.selectbox("Please select transmission type of your vehicle *",options=options.transmission_options, index=None, placeholder="Transmission")
+with col2:
+    vehicle_size = st.selectbox("Please select size type of your vehicle",options=options.vehicle_sizes, index=None, placeholder="Vehicle size")
+with col3:
+    vehicle_color = st.selectbox("Please select color of your vehicle",options=options.colors, index=None, placeholder="Vehicle color")
+with col3:
+    months_ago_number = st.number_input("When many months ago this got posted", min_value=0)
+with col3:
+    selected_model = st.selectbox("Choose car model *", options.models, index=None, placeholder="Vehicle Model")
+with col3:
+    selected_drive_type = st.selectbox("Choose car drive type", options.drive_options, index=None, placeholder="Vehicle Drive type")
+with col3:
+    selected_type = st.selectbox("Choose car type", options.type, index=None, placeholder="Vehicle type")
+with col3:
+    selected_state = st.selectbox("Choose state *", options.state, index=None, placeholder="Select State")
 
 description = st.text_area("Describe your vehicle condition")
 
