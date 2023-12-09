@@ -452,9 +452,7 @@ if not condition:
     
 # Make the prediction
 col1, col2 = st.columns(2)
-# Add dropdown menu to the first column
-model_options = ["Random Forest", "Decision Tree", "KNN"]
-model_selected_for_prediction = col1.selectbox("Choose Model:", options=model_options)
+
 # Displaying results
 if st.button("Predict Price"):
     if not (fuel and title_status and transmission and selected_model and selected_state and manufacturer and region):
@@ -472,12 +470,7 @@ if st.button("Predict Price"):
         selected_drive_type = str(selected_drive_type).lower()
         selected_type = str(selected_type).lower()
         selected_state = str(selected_state).lower()
-        if model_selected_for_prediction == "Decision Tree":
-            model = loadModel("decision_tree.pkl")
-        elif model_selected_for_prediction == "KNN":
-            model = loadModel("knn.pkl")
-        else:
-            model = loadModel(default_model_path)
+        model = loadModel(default_model_path)
         image_container = st.empty()
         resultContainer = st.empty()
         image_container.image(loading_gif_path, width=480)
