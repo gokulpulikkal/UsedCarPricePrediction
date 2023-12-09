@@ -1,3 +1,4 @@
+# Import required libraries
 import pandas as pd
 import numpy as np
 import pickle
@@ -17,9 +18,10 @@ from nltk.corpus import opinion_lexicon
 from nltk.tokenize import word_tokenize
 
 
-# Load the pickled model
+# Load the pickled model (trained model, by default RandomForest)
 default_model_path = "randomForest.pkl"
 # default_model_path = "randomForest"
+
 loading_gif_path = "l2.gif"
 selectbox_color = '#000000'
 title_color = '#134F5C'
@@ -29,17 +31,10 @@ def loadModel(modelPath):
         model = pickle.load(f)
         return model
 
-# with open(model_file, "rb") as f:
-#     model = pickle.load(f)
-
-#hel
-
 def difference_in_months(strdate):
   strdate = strdate.split('t')[0]
   current_date = datetime.now()
   current_date = current_date.strftime("%Y-%m-%d")
-
-
   current_date = datetime.strptime(current_date, "%Y-%m-%d")
   posting_date = datetime.strptime(strdate, "%Y-%m-%d")
   difference_in_months = relativedelta(current_date, posting_date).years * 12 + relativedelta(current_date, posting_date).months
@@ -100,7 +95,7 @@ def classify_sentiment(p, n):
 
 # Create a function to predict the price
 def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, odometer, title_status, trans, drive, size, type, paint, desc, state, posting_date):
-    #preprocess
+    #preprocessing given input by user
     df = pd.DataFrame(columns=['year',
  'cylinders',
  'odometer',
@@ -384,7 +379,6 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
     df.loc[0,'posted_ago_in_months'] = int(posted_ago)
     df.loc[0,'positive_words'] = int(positive_words)
     df.loc[0,'negative_words'] = int(negative_words)
-
     column_names = [region_col, manuf_col, model_col, condition_col, fuel_col, title_status_col, trans_col, drive_col, size_col, type_col, paint_col, state_col, 'year', 'age', 'odometer','sentiment_value','posted_ago_in_months','positive_words','negative_words', 'cylinders']
 
     for col in df.columns:
@@ -397,33 +391,16 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
     prediction = model.predict(dummy_sample)
     return prediction
 
-# # Create a Streamlit app
-# st.title("Used Car Price Prediction Model")
-# # Collect user input
-# year = st.number_input("Year", min_value=1980, max_value=2023)
-# cylinder = st.number_input("Number of cylinders", min_value=3, max_value=8)
-# odometer = st.number_input("Odometer reading (miles)", min_value=0)
-# age = st.number_input("Age of car (years)", min_value=0)
-
-# # Make the prediction
-# if st.button("Predict Price"):
-    
-#     predicted_price = predict_price('austin', 2014, 'chevrolet', 'camaro', 'new', 8, 'gas', 10000, 'rebuilt', 'manual', 'fwd', 'full-size', 'sedan', 'grey', 'very good condition', 'ar', 10)
-#     st.write(predicted_price)
-
-
-# Create a Streamlit app
-
-# add_custom_css("cars4.jpg")
-# Title
-# st.title(":car: :blue[Used Car Price Prediction Model]")
+# Aligning input fields
 col1, col2, col3 = st.columns([0.1, 1, 0.1])
-
+# Banner image
 col2.image("bgt1.jpeg")
 st.title("") #Don't remove. This is added for extra space. Empty is not seems to be working
 
+# Alignment of input fields
 col1, col2, col3 = st.columns([3, 3, 3], gap="large")
-# Collect user input
+
+# Read user input from the input fields
 with col1:
     year = st.number_input("Year", min_value=1980, max_value=2023)
 with col1:
@@ -436,7 +413,6 @@ with col1:
     manufacturer = st.selectbox("Please select Manufacturer *", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
 with col1:
     region = st.selectbox("Please select Region *",options=options.regions_options, index=None, placeholder="Select Region")
-
 with col2:
     condition = st.selectbox("Please select Condition of your vehicle",options=options.vehicle_condition_options, index=None, placeholder="Vehicle condition")
 with col2:
@@ -462,30 +438,25 @@ with col3:
 
 description = st.text_area("Describe your vehicle condition")
 
-
+# if user does not give any input for non-required fields
 if not selected_drive_type:
     selected_drive_type = "uncharted"
-
 if not vehicle_size:
     vehicle_size = "uncharted"
-
 if not selected_type:
     selected_type = "uncharted"
-
 if not vehicle_color:
     vehicle_color = "uncharted"
-
 if not condition:
     condition = "uncharted"
-
+    
 # Make the prediction
 col1, col2 = st.columns(2)
 # Add dropdown menu to the first column
 model_options = ["Random Forest", "Decision Tree", "KNN"]
 model_selected_for_prediction = col1.selectbox("Choose Model:", options=model_options)
-
-# model_button = st.button("Predict")
-if st.button("Predict Price",  key='custom-button'):
+# Displaying results
+if st.button("Predict Price"):
     if not (fuel and title_status and transmission and selected_model and selected_state and manufacturer and region):
         st.warning("Please fill all the required fields *")
     else: 
@@ -501,7 +472,6 @@ if st.button("Predict Price",  key='custom-button'):
         selected_drive_type = str(selected_drive_type).lower()
         selected_type = str(selected_type).lower()
         selected_state = str(selected_state).lower()
-
         if model_selected_for_prediction == "Decision Tree":
             model = loadModel("decision_tree.pkl")
         elif model_selected_for_prediction == "KNN":
@@ -517,8 +487,6 @@ if st.button("Predict Price",  key='custom-button'):
             predicted_price = 0
         image_container.empty()
         resultContainer.write(f"Price predicted for used car is: {predicted_price[0]} $")
-        
         icol1, icol2 = st.columns([1.99,2.11])
-
         icol2.image("feature_importances_rf.png")
         icol1.image("pricevsage.png")
