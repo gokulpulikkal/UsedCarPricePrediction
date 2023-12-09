@@ -18,8 +18,8 @@ from nltk.tokenize import word_tokenize
 
 
 # Load the pickled model
-# model_file = "best_model_used_car.pkl"
-default_model_path = "randomForest"
+default_model_path = "randomForest.pkl"
+# default_model_path = "randomForest"
 loading_gif_path = "l2.gif"
 selectbox_color = '#000000'
 title_color = '#134F5C'
@@ -32,6 +32,7 @@ def loadModel(modelPath):
 # with open(model_file, "rb") as f:
 #     model = pickle.load(f)
 
+#hel
 
 def difference_in_months(strdate):
   strdate = strdate.split('t')[0]
@@ -390,64 +391,9 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
         if col not in column_names:
             df.loc[0,col] = 0
     
-
-    #sample
-    # sample_row=[[2.020e+03, 0.000e+00, 7.245e+03, 3.000e+00, 3.000e+01, 1.700e+01,
-    #    5.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 1.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 1.000e+00,
-    #    1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    1.000e+00, 0.000e+00, 1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    1.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 1.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00,
-    #    0.000e+00, 0.000e+00, 0.000e+00, 0.000e+00, 1.000e+00]]
-    # company = "Toyota"
-    # car_model = "Corolla"
-    # year = 2020
-    # fuel_type = "Petrol"
-    # driven = 50000
     dummy_sample = df
-    # Create a pandas DataFrame with the dummy input
-    # dummy_input = pd.DataFrame({
-    #     "name": [car_model],
-    #     "company": [company],
-    #     "year": [year],
-    #     "kms_driven": [driven],
-    #     "fuel_type": [fuel_type],
-    # })
-
 
     # Make a prediction using the model
-
     prediction = model.predict(dummy_sample)
     return prediction
 
@@ -487,9 +433,9 @@ with col1:
 with col1:
     age = st.number_input("Age of car (years)", min_value=0)
 with col1:
-    manufacturer = st.selectbox("Please select Manufacturer", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
+    manufacturer = st.selectbox("Please select Manufacturer *", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
 with col1:
-    region = st.selectbox("Please select Region",options=options.regions_options, index=None, placeholder="Select Region")
+    region = st.selectbox("Please select Region *",options=options.regions_options, index=None, placeholder="Select Region")
 
 with col2:
     condition = st.selectbox("Please select Condition of your vehicle",options=options.vehicle_condition_options, index=None, placeholder="Vehicle condition")
@@ -516,8 +462,6 @@ with col3:
 
 description = st.text_area("Describe your vehicle condition")
 
-if not manufacturer:
-    manufacturer = "uncharted"
 
 if not selected_drive_type:
     selected_drive_type = "uncharted"
@@ -541,29 +485,8 @@ model_options = ["Random Forest", "Decision Tree", "KNN"]
 model_selected_for_prediction = col1.selectbox("Choose Model:", options=model_options)
 
 # model_button = st.button("Predict")
-
-button_color = '#5cff33'  # Change this to your desired color hex code
-button_style = f"""
-    <style>
-    .custom-button {{
-        background-color: {button_color};
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease-in-out;
-    }}
-    .custom-button:hover {{
-        background-color: {button_color};
-    }}
-    </style>
-"""
-
-# Make the prediction
-st.markdown(button_style, unsafe_allow_html=True)
 if st.button("Predict Price",  key='custom-button'):
-    if not (fuel and title_status and transmission and selected_model and selected_state):
+    if not (fuel and title_status and transmission and selected_model and selected_state and manufacturer and region):
         st.warning("Please fill all the required fields *")
     else: 
         manufacturer = str(manufacturer).lower()
@@ -593,4 +516,9 @@ if st.button("Predict Price",  key='custom-button'):
         if predicted_price < 0:
             predicted_price = 0
         image_container.empty()
-        resultContainer.write(f"Price predicted for used car is: {predicted_price[0]}")
+        resultContainer.write(f"Price predicted for used car is: {predicted_price[0]} $")
+        
+        icol1, icol2 = st.columns([1.99,2.11])
+
+        icol2.image("feature_importances_rf.png")
+        icol1.image("pricevsage.png")
