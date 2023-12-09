@@ -1,4 +1,2 @@
 python3-nltk
-pickle
-dateutil
-re
+python3-dateutil
