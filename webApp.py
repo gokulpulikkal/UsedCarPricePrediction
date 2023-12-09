@@ -7,6 +7,8 @@ import datetime
 import options
 import nltk
 import re
+import time
+import base64
 nltk.download('opinion_lexicon')
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -17,7 +19,10 @@ from nltk.tokenize import word_tokenize
 
 # Load the pickled model
 # model_file = "best_model_used_car.pkl"
-default_model_path = "best_model_used_car.pkl"
+default_model_path = "randomForest"
+loading_gif_path = "l2.gif"
+selectbox_color = '#000000'
+title_color = '#134F5C'
 
 def loadModel(modelPath):
     with open(modelPath, "rb") as f:
@@ -38,6 +43,22 @@ def difference_in_months(strdate):
   posting_date = datetime.strptime(strdate, "%Y-%m-%d")
   difference_in_months = relativedelta(current_date, posting_date).years * 12 + relativedelta(current_date, posting_date).months
   return difference_in_months
+
+# Function to add custom CSS using a base64 encoded image
+def add_custom_css(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/jpeg;base64,{encoded_string}");
+            background-size: cover;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 def remove_urls(text):
     return re.sub(r'http\S+', '', text)
@@ -446,7 +467,9 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
 
 
 # Create a Streamlit app
-st.title("Used Car Price Prediction Model")
+
+# add_custom_css("cars.jpg")
+st.title(":blue[Used Car Price Prediction Model]")
 
 
 # Collect user input
@@ -558,19 +581,12 @@ if st.button("Predict Price",  key='custom-button'):
             model = loadModel("knn.pkl")
         else:
             model = loadModel(default_model_path)
-
-
+        image_container = st.empty()
+        resultContainer = st.empty()
+        image_container.image(loading_gif_path, width=480)
+        time.sleep(4)
         predicted_price = predict_price(region, year, manufacturer, selected_model, condition, cylinder, fuel, odometer, title_status, transmission, selected_drive_type, vehicle_size, selected_type, vehicle_color, description, selected_state, months_ago_number)
         if predicted_price < 0:
             predicted_price = 0
-            
-        st.write(f"Price predicted for used car is: {predicted_price[0]}")
-
-
-# Display information about the model
-
-st.markdown("**Model details:**")
-st.write(f"- Programming language: Python")
-st.write(f"- Model format: Pickle")
-st.write(f"- Input features: year, cylinder, odometer, age")
-st.write(f"Copyright belongs to winspear")
+        image_container.empty()
+        resultContainer.write(f"Price predicted for used car is: {predicted_price[0]}")
