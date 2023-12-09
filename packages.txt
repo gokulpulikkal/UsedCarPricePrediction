@@ -1,4 +1,4 @@
-nltk
+python3-nltk
 pickle
 dateutil
 re
