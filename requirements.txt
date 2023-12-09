@@ -1,4 +1,3 @@
 nltk
-dateutil
 pandas
 numpy
