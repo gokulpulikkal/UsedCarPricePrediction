@@ -18,19 +18,24 @@ from nltk.corpus import opinion_lexicon
 from nltk.tokenize import word_tokenize
 
 
-# Load the pickled model (trained model, by default RandomForest)
+# Saving the default model file path
 default_model_path = "randomForest.pkl"
-# default_model_path = "randomForest"
 
+# Constants for the app
 loading_gif_path = "l2.gif"
 selectbox_color = '#000000'
 title_color = '#134F5C'
-st.set_page_config(page_title="Let's predict this", layout="wide")
+
+# Tab title
+st.set_page_config(page_title="Let's predict price for vehicle", layout="wide")
+
+# Method for loading the model
 def loadModel(modelPath):
     with open(modelPath, "rb") as f:
         model = pickle.load(f)
         return model
 
+# Method to calculate difference in months from the string date
 def difference_in_months(strdate):
   strdate = strdate.split('t')[0]
   current_date = datetime.now()
@@ -56,15 +61,19 @@ def add_custom_css(image_path):
         unsafe_allow_html=True
     )
 
+# remove the URLs from the text
 def remove_urls(text):
     return re.sub(r'http\S+', '', text)
 
+# remove the numbers from the text
 def remove_numbers(text):
     return re.sub(r'\d+', '', text)
 
+# remove the special characters from the text
 def remove_special_characters(text):
     return re.sub(r'[^\w\s]', '', text)
 
+# Taking the positive words
 positive_words = set(opinion_lexicon.positive())
 def extract_positive_words(text):
     words = word_tokenize(text)  # Tokenize the text into words
@@ -75,18 +84,19 @@ def extract_positive_words(text):
         return len(positive_words_found)
 
 
-# Extract negative words method gives the count of number of negative words found the in description
+# Extract negative words
 negative_words = set(opinion_lexicon.negative())
 
 # Method to extract negative words from a text
 def extract_negative_words(text):
-    words = word_tokenize(text)  # Tokenizing text into words
+    words = word_tokenize(text)
     negative_words_found = [word for word in words if word in negative_words]
     if len(negative_words_found) == float('nan'):
         return 0
     else:
         return len(negative_words_found)
 
+# Method to get the sentiment of the sentence
 def classify_sentiment(p, n):
     if p > n:
         return 1
@@ -96,6 +106,7 @@ def classify_sentiment(p, n):
 # Create a function to predict the price
 def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, odometer, title_status, trans, drive, size, type, paint, desc, state, posting_date):
     #preprocessing given input by user
+    # Columns expected by the model
     df = pd.DataFrame(columns=['year',
  'cylinders',
  'odometer',
@@ -339,6 +350,7 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
     current_year = datetime.datetime.now().year
     car_age = current_year - year
     posted_ago = posting_date
+    # Processing the description sentiment
     description = remove_urls(desc)
     description = remove_numbers(description)
     description = remove_special_characters(description)
@@ -346,6 +358,7 @@ def predict_price(region, year, manuf, car_model, condition, cylinders, fuel, od
     negative_words = extract_negative_words(description)
     sentiment = classify_sentiment(positive_words, negative_words)
 
+    # Creating the data point as expected by the model
     region_col = 'region_'+region
     manuf_col = 'manufacturer_'+manuf
     model_col = 'model_'+car_model
@@ -402,43 +415,43 @@ col1, col2, col3 = st.columns([3, 3, 3], gap="large")
 
 # Read user input from the input fields
 with col1:
-    year = st.number_input("Year", min_value=1980, max_value=2023)
+    year = st.number_input("Manufacturing Year", min_value=1980, max_value=2023)
 with col1:
     cylinder = st.number_input("Number of cylinders", min_value=3, max_value=8)
 with col1:
     odometer = st.number_input("Odometer reading (miles)", min_value=0)
 with col1:
-    age = st.number_input("Age of car (years)", min_value=0)
+    manufacturer = st.selectbox("Select Manufacturer *", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
 with col1:
-    manufacturer = st.selectbox("Please select Manufacturer *", index=None,options=options.manufacturer_options, placeholder="Select Manufacturer")
+    region = st.selectbox("select Region *",options=options.regions_options, index=None, placeholder="Select Region")
 with col1:
-    region = st.selectbox("Please select Region *",options=options.regions_options, index=None, placeholder="Select Region")
+    selected_state = st.selectbox("Choose state *", options.state, index=None, placeholder="Select State")
 with col2:
     condition = st.selectbox("Please select Condition of your vehicle",options=options.vehicle_condition_options, index=None, placeholder="Vehicle condition")
 with col2:
-    fuel = st.selectbox("Please select fuel type of your vehicle *",options=options.fuel_options, index=None, placeholder="Fuel type")
+    fuel = st.selectbox("Select fuel type of your vehicle *",options=options.fuel_options, index=None, placeholder="Fuel type")
 with col2:
-    title_status = st.selectbox("Please select title status of your vehicle *",options=options.title_status_options, index=None, placeholder="Title Status")
+    title_status = st.selectbox("Select title status of your vehicle *",options=options.title_status_options, index=None, placeholder="Title Status")
 with col2:
-    transmission = st.selectbox("Please select transmission type of your vehicle *",options=options.transmission_options, index=None, placeholder="Transmission")
+    transmission = st.selectbox("Select transmission type of your vehicle *",options=options.transmission_options, index=None, placeholder="Transmission")
 with col2:
     vehicle_size = st.selectbox("Please select size type of your vehicle",options=options.vehicle_sizes, index=None, placeholder="Vehicle size")
 with col3:
     vehicle_color = st.selectbox("Please select color of your vehicle",options=options.colors, index=None, placeholder="Vehicle color")
 with col3:
-    months_ago_number = st.number_input("When many months ago this got posted", min_value=0)
+    months_ago_number = st.number_input("Posted months ago", min_value=0)
 with col3:
     selected_model = st.selectbox("Choose car model *", options.models, index=None, placeholder="Vehicle Model")
 with col3:
-    selected_drive_type = st.selectbox("Choose car drive type", options.drive_options, index=None, placeholder="Vehicle Drive type")
+    selected_drive_type = st.selectbox("Please Choose car drive type", options.drive_options, index=None, placeholder="Vehicle Drive type")
 with col3:
-    selected_type = st.selectbox("Choose car type", options.type, index=None, placeholder="Vehicle type")
-with col3:
-    selected_state = st.selectbox("Choose state *", options.state, index=None, placeholder="Select State")
+    selected_type = st.selectbox("Please Choose car type", options.type, index=None, placeholder="Vehicle type")
 
-description = st.text_area("Describe your vehicle condition")
+
+description = st.text_area("Describe your vehicle")
 
 # if user does not give any input for non-required fields
+# Making the default value saved
 if not selected_drive_type:
     selected_drive_type = "uncharted"
 if not vehicle_size:
@@ -458,6 +471,7 @@ if st.button("Predict Price"):
     if not (fuel and title_status and transmission and selected_model and selected_state and manufacturer and region):
         st.warning("Please fill all the required fields *")
     else: 
+        # Reading the saved variables
         manufacturer = str(manufacturer).lower()
         region = str(region).lower()
         condition = str(condition).lower()
@@ -470,10 +484,14 @@ if st.button("Predict Price"):
         selected_drive_type = str(selected_drive_type).lower()
         selected_type = str(selected_type).lower()
         selected_state = str(selected_state).lower()
+
+        # Getting the model object
         model = loadModel(default_model_path)
         image_container = st.empty()
         resultContainer = st.empty()
+        # Loading indicator
         image_container.image(loading_gif_path, width=480)
+        # Putting fake loading 
         time.sleep(4)
         predicted_price = predict_price(region, year, manufacturer, selected_model, condition, cylinder, fuel, odometer, title_status, transmission, selected_drive_type, vehicle_size, selected_type, vehicle_color, description, selected_state, months_ago_number)
         if predicted_price < 0:
