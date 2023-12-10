@@ -497,7 +497,7 @@ if st.button("Predict Price"):
         if predicted_price < 0:
             predicted_price = 0
         image_container.empty()
-        resultContainer.write(f"Price predicted for used car is: {predicted_price[0]} $")
+        resultContainer.write(f"Price predicted for used car is: {predicted_price[0]:.2f} $")
         icol1, icol2 = st.columns([1.99,2.11])
         icol2.image("feature_importances_rf.png")
         icol1.image("pricevsage.png")
